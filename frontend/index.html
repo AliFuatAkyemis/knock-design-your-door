@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KNOCK — Design Your Door</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>KNOCK</h1>
+  <p class="subtitle">Design Your Door</p>
+  <p class="year">&#9670; 1973 &#9670;</p>
+</header>
+
+<main>
+  <div class="upload-section">
+    <h2>Upload Your Cover</h2>
+
+    <div class="drop-zone" id="dropZone">
+      <div class="icon">&#9834;</div>
+      <p>Drop your cover of <em>Knockin' on Heaven's Door</em> here</p>
+      <p style="font-size:0.8rem;">MP3, WAV, M4A, OGG — max 25MB</p>
+      <p class="file-name" id="fileName"></p>
+    </div>
+    <input type="file" id="audioInput" accept="audio/*">
+
+    <div class="metadata-grid">
+      <div class="field-group">
+        <label for="artistInput">Performer</label>
+        <input type="text" id="artistInput" placeholder="e.g. Eric Clapton">
+      </div>
+      <div class="field-group">
+        <label for="yearInput">Year Recorded</label>
+        <input type="number" id="yearInput" placeholder="e.g. 1975" min="1973" max="2025">
+      </div>
+      <div class="field-group">
+        <label for="styleSelect">Musical Style</label>
+        <select id="styleSelect">
+          <option value="acoustic">Acoustic</option>
+          <option value="electric rock">Electric Rock</option>
+          <option value="jazz">Jazz</option>
+          <option value="blues">Blues</option>
+          <option value="folk">Folk</option>
+          <option value="punk">Punk</option>
+          <option value="country">Country</option>
+          <option value="classical">Classical</option>
+          <option value="gospel">Gospel</option>
+          <option value="reggae">Reggae</option>
+          <option value="orchestral">Orchestral</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" disabled>
+      &#9670; Design Your Door &#9670;
+    </button>
+  </div>
+
+  <div class="status-bar" id="statusBar"></div>
+
+  <div class="results-section" id="resultsSection">
+
+    <div class="result-card">
+      <h3>Generated Visual — 1973 Aesthetic</h3>
+      <div class="image-container">
+        <img id="generatedImage" src="" alt="Generated 1973-aesthetic visual">
+        <a class="download-btn" id="downloadBtn" href="#" download="knock-design-your-door.png">
+          Download Image
+        </a>
+      </div>
+    </div>
+
+    <div class="analysis-grid">
+
+      <div class="result-card">
+        <h3>Transcription</h3>
+        <div id="transcriptionText"></div>
+        <p class="lang-note" id="langNote"></p>
+      </div>
+
+      <div class="result-card">
+        <h3>Philosophical Analysis</h3>
+        <ul class="themes-list" id="themesList"></ul>
+
+        <div class="analysis-block">
+          <div class="label">Emotional Tone</div>
+          <p id="emotionalTone"></p>
+        </div>
+        <div class="analysis-block">
+          <div class="label">Dylan's Interpretation</div>
+          <p id="dylanInterp"></p>
+        </div>
+        <div class="analysis-block">
+          <div class="label">Connection to 1973</div>
+          <p id="conn1973"></p>
+        </div>
+        <div class="analysis-block">
+          <div class="label">The Door Symbolism</div>
+          <p id="doorSymbol"></p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="result-card">
+      <h3>Image Prompt (Generated)</h3>
+      <div id="imagePromptText"></div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  KNOCK: Design Your Door &mdash; CSE 358 AI Art Project &mdash; Bob Dylan, 1973
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
