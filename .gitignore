@@ -1,0 +1,18 @@
+# Environment
+.env
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Uploads & outputs (runtime)
+uploads/*
+outputs/*
+!uploads/.gitkeep
+!outputs/.gitkeep
