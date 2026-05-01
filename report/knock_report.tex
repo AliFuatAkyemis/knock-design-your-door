@@ -1,0 +1,698 @@
+\documentclass[12pt, a4paper]{article}
+
+% ── Packages ──────────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{lmodern}
+\usepackage{csquotes}
+\usepackage{mdframed}
+\usepackage{ragged2e}
+
+% ── Colors ────────────────────────────────────────────────────────────────────
+\definecolor{darkblue}{HTML}{1a1a2e}
+\definecolor{gold}{HTML}{c8a96e}
+\definecolor{rust}{HTML}{8b4513}
+\definecolor{lightgray}{HTML}{f5f0e8}
+\definecolor{midgray}{HTML}{555555}
+\definecolor{codebg}{HTML}{f0ede8}
+
+% ── Hyperref setup ────────────────────────────────────────────────────────────
+\hypersetup{
+    colorlinks=true,
+    linkcolor=rust,
+    urlcolor=rust,
+    citecolor=rust,
+    pdftitle={KNOCK: Design Your Door — Final Report},
+    pdfauthor={Mustafa Mert Can, Ali Fuat Akyemiş}
+}
+
+% ── Section title formatting ──────────────────────────────────────────────────
+\titleformat{\section}
+    {\large\bfseries\color{darkblue}}
+    {\thesection.}{0.5em}{}
+    [\vspace{2pt}\textcolor{gold}{\titlerule[0.5pt]}]
+
+\titleformat{\subsection}
+    {\normalsize\bfseries\color{rust}}
+    {\thesubsection}{0.5em}{}
+
+\titleformat{\subsubsection}
+    {\normalsize\bfseries\color{darkblue}}
+    {\thesubsubsection}{0.5em}{}
+
+\titlespacing{\section}{0pt}{18pt}{6pt}
+\titlespacing{\subsection}{0pt}{12pt}{4pt}
+\titlespacing{\subsubsection}{0pt}{8pt}{3pt}
+
+% ── Quote box ─────────────────────────────────────────────────────────────────
+\newmdenv[
+    leftmargin=2cm,
+    rightmargin=2cm,
+    innerleftmargin=12pt,
+    innerrightmargin=12pt,
+    innertopmargin=8pt,
+    innerbottommargin=8pt,
+    linecolor=gold,
+    linewidth=0.5pt,
+    backgroundcolor=lightgray,
+    skipabove=8pt,
+    skipbelow=8pt
+]{quotebox}
+
+% ── Code style ────────────────────────────────────────────────────────────────
+\newmdenv[
+    leftmargin=1cm,
+    innerleftmargin=10pt,
+    innerrightmargin=10pt,
+    innertopmargin=6pt,
+    innerbottommargin=6pt,
+    linecolor=gold,
+    linewidth=0.4pt,
+    backgroundcolor=codebg,
+    skipabove=6pt,
+    skipbelow=6pt
+]{codebox}
+
+% ── Header / Footer ──────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{midgray}{KNOCK: Design Your Door}}
+\fancyhead[R]{\small\textcolor{midgray}{CSE 358 — Spring 2025–2026}}
+\fancyfoot[C]{\small\textcolor{midgray}{\thepage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{gold}\leaders\hrule height \headrulewidth\hfill}}
+\setlength{\headheight}{25pt}
+\addtolength{\topmargin}{-13pt}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ── COVER PAGE ────────────────────────────────────────────────────────────────
+\begin{titlepage}
+    \centering
+    \vspace*{3cm}
+
+    {\Huge\bfseries\color{darkblue} KNOCK}\\[0.4em]
+    {\large\itshape\color{rust} Design Your Door}\\[0.8em]
+    \textcolor{gold}{\rule{\linewidth}{0.5pt}}\\[0.8em]
+    {\small\color{midgray} CSE 358 Introduction to Artificial Intelligence}\\[0.2em]
+    {\small\color{midgray} Final Project Report}\\[3cm]
+
+    {\large\bfseries\color{darkblue} Mustafa Mert Can \quad|\quad Ali Fuat Akyemiş}\\[0.4em]
+    {\small\color{midgray} 20220808705 \quad|\quad 20210808043}\\[0.6em]
+    {\small\color{midgray} May 2026}\\[0.6em]
+    {\small\ttfamily\color{rust}
+        \href{https://github.com/AliFuatAkyemis/knock-design-your-door}%
+             {github.com/AliFuatAkyemis/knock-design-your-door}}
+
+    \vfill
+
+    \begin{quotebox}
+        \centering
+        \itshape\color{rust}
+        ``Mama, take this badge off of me / I can't use it anymore''\\[0.3em]
+        \normalfont\small\color{midgray}
+        --- Bob Dylan, \textit{Knockin' on Heaven's Door} (1973)
+    \end{quotebox}
+\end{titlepage}
+
+\thispagestyle{empty}
+\newpage
+
+% ── ABSTRACT ─────────────────────────────────────────────────────────────────
+\section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+\textcolor{gold}{\rule{\linewidth}{0.5pt}}
+\vspace{4pt}
+
+\textbf{KNOCK: Design Your Door} is an AI-augmented hermeneutic system that analyzes
+contemporary covers of Bob Dylan's 1973 meditation on mortality,
+\textit{Knockin' on Heaven's Door.} By orchestrating three distinct generative AI
+techniques --- Speech-to-Text (Groq Whisper), Large Language Model analysis
+(Llama 3.3 70B), and Text-to-Image generation (Flux via Pollinations.ai) --- the
+project constructs a multi-layered reinterpretation of any performer's relationship
+to the song's themes. The result is a visual artifact generated in real time,
+steeped in the aesthetic language of 1973: Kodachrome film grain, warm earth tones,
+and imagery drawn from the Vietnam War counterculture. This report details the
+technical architecture, artistic vision, and philosophical engagement behind the
+system, culminating in a personal manifesto on mortality, interpretation, and the
+act of knocking.
+
+\newpage
+
+% ── TABLE OF CONTENTS ─────────────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+
+Bob Dylan wrote \textit{Knockin' on Heaven's Door} in 1973 for Sam Peckinpah's
+revisionist Western \textit{Pat Garrett \& Billy the Kid.} The song accompanies
+the death of a sheriff --- a man disarmed, exhausted, and surrendering to the
+inevitable. In fewer than two minutes, Dylan distilled an entire era's grief into
+four lines and a repeated refrain. The year was 1973: the Paris Peace Accords had
+been signed in January, ostensibly ending direct American involvement in Vietnam,
+yet the war's psychological wreckage endured. A generation raised on protest had
+grown tired. The counterculture was fragmenting. To knock on heaven's door was not
+merely to die --- it was to relinquish the burden of a world that had demanded too much.
+
+Fifty years later, the song persists --- performed by hundreds of artists across
+genres, languages, and continents. Each cover is a new interpretation: a contemporary
+voice pressing its ear against Dylan's original door and hearing something different
+behind it. KNOCK asks: what happens when we run that interpretation through an AI
+pipeline designed to hear the song the way 1973 heard it?
+
+The project is not a music generator, nor a simple chatbot. It is a
+\textbf{hermeneutic machine} --- a system that interprets interpretations, and in
+doing so, asks whether meaning can survive translation across time, medium,
+and model weights.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Technical Implementation}
+
+\subsection{System Architecture Overview}
+
+KNOCK is implemented as a full-stack web application with a clear separation between
+the AI processing backend and the thematic frontend. The pipeline is strictly
+sequential: audio enters, passes through three AI stages, and a visual artifact exits.
+The architecture is designed to be asynchronous throughout, ensuring the interface
+remains responsive during heavy model inference.
+
+\vspace{8pt}
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{
+    >{\bfseries\color{darkblue}}l
+    >{\ttfamily\small}l
+    >{\RaggedRight\arraybackslash}X
+}
+\rowcolor{darkblue}
+\textcolor{white}{\textbf{Layer}} &
+\textcolor{white}{\textbf{Technology}} &
+\textcolor{white}{\textbf{Role}} \\
+\rowcolor{lightgray}
+Frontend         & Vanilla JS + CSS                  & Audio recording/upload, thematic UI, film-grain overlays \\
+Backend API      & FastAPI (Python)                  & Async routing, service orchestration, error handling \\
+\rowcolor{lightgray}
+Stage 1 --- STT  & Groq Whisper (large-v3-turbo)     & Audio transcription \\
+Stage 2 --- LLM  & Groq Llama 3.3 70B                & Philosophical and thematic analysis \\
+\rowcolor{lightgray}
+Stage 3 --- T2I  & Pollinations.ai Flux              & Visual artifact generation \\
+Prompt Layer     & utils/prompt\_engineer.py         & 5-layer 1973 aesthetic injection \\
+\end{tabularx}
+\end{center}
+\vspace{8pt}
+
+\subsection{AI Technique Integration}
+
+The three AI techniques are not simply chained in sequence --- each stage's output
+actively shapes the next stage's input, creating emergent results that no single
+technique could produce alone.
+
+\subsubsection{Stage 1 --- Speech-to-Text (Groq Whisper)}
+
+The \textit{whisper-large-v3-turbo} model transcribes the user's audio cover with
+high fidelity, capturing not just the words but the performer's unique phrasing,
+emphasis, and vocal dynamics encoded in the text representation. This transcription
+is passed verbatim to Stage 2, ensuring that the LLM analysis is grounded in the
+specific human performance rather than a generic lyric sheet.
+
+\subsubsection{Stage 2 --- Large Language Model Analysis (Llama 3.3 70B)}
+
+The LLM receives the Whisper transcription along with a carefully engineered system
+prompt that grounds it in the 1973 historical context. The model is instructed to
+analyze: (1) the emotional register of the performance, (2) connections to the
+Vietnam War era and counterculture themes, (3) the performer's relationship to the
+song's core motifs --- farewell, mortality, disarmament --- and (4) a symbolic visual
+direction for Stage 3. This analysis is structured JSON output, which the backend
+parses and routes to the prompt engineering layer.
+
+\subsubsection{Stage 3 --- Text-to-Image Generation (Pollinations.ai Flux)}
+
+Flux receives a dynamically constructed prompt from \texttt{utils/prompt\_engineer.py},
+which synthesizes the LLM's thematic analysis with the 5-layer aesthetic framework
+described in Section~\ref{sec:prompt}. The resulting image is the project's primary
+artistic output: a visual artifact that is both historically anchored and uniquely
+responsive to the specific human performance that triggered it.
+
+\subsection{Technical Ambition: The 5-Layer Prompt Engineering System}
+\label{sec:prompt}
+
+The prompt engineering layer is the technical heart of KNOCK's artistic ambition.
+Rather than passing the LLM's analysis directly to the image model,
+\texttt{utils/prompt\_engineer.py} processes it through five injection layers:
+
+\begin{itemize}[leftmargin=1.5em, itemsep=4pt]
+    \item \textbf{Aesthetic Base:} Every prompt includes Kodachrome film grain,
+    35mm documentary photography style, shallow depth of field, warm earth tones,
+    and the faded yellows and burnt oranges characteristic of 1973 photojournalism.
+
+    \item \textbf{Historical Layer:} Keywords from the LLM analysis trigger
+    period-specific imagery: dog tags, protest banners, military helicopters,
+    rice paddies, candlelight vigils, or the smoky backrooms of American folk clubs.
+
+    \item \textbf{Symbolic Anchor:} A `Door' motif --- weathered wood, peeling paint,
+    threshold light --- is injected as a compositional constant, providing visual
+    continuity across all generated artifacts.
+
+    \item \textbf{Emotional Modulator:} The LLM's extracted emotional register
+    (grief, resignation, defiance, hope) adjusts the prompt's descriptive language:
+    a grief-coded performance generates heavier shadow and empty space; a defiant one
+    generates wider aperture and stronger contrast.
+
+    \item \textbf{Negative Prompt Layer:} Explicit exclusions prevent the model from
+    generating anachronistic imagery, digital aesthetics, or saturated colors
+    incompatible with the 1973 visual language.
+\end{itemize}
+
+\subsection{Repository Structure}
+
+The full source code and project assets are organized as follows:
+
+\begin{codebox}
+\small\ttfamily
+KNOCK-PROJECT/\\
+|-- backend/                \textcolor{midgray}{\# FastAPI server and AI logic}\\
+|   |-- config.py           \textcolor{midgray}{\# Environment configuration}\\
+|   |-- main.py             \textcolor{midgray}{\# Application entry point}\\
+|   |-- models/             \textcolor{midgray}{\# Pydantic data schemas}\\
+|   |   `-- schemas.py\\
+|   |-- services/           \textcolor{midgray}{\# AI Model integrations}\\
+|   |   |-- gemini\_service.py\\
+|   |   |-- siliconflow\_service.py\\
+|   |   `-- whisper\_service.py\\
+|   `-- utils/              \textcolor{midgray}{\# Helper utilities}\\
+|       `-- prompt\_engineer.py \textcolor{midgray}{\# 5-layer prompt system}\\
+|-- frontend/               \textcolor{midgray}{\# Client-side implementation}\\
+|   |-- app.js              \textcolor{midgray}{\# Audio handling and API calls}\\
+|   |-- index.html          \textcolor{midgray}{\# Thematic user interface}\\
+|   `-- style.css           \textcolor{midgray}{\# 1973 film-grain aesthetics}\\
+|-- .env                    \textcolor{midgray}{\# Secret API keys}\\
+`-- requirements.txt        \textcolor{midgray}{\# Python dependencies}
+\end{codebox}
+
+\subsection{Setup and Execution Walkthrough}
+
+Since sensitive configuration files (\texttt{.env}) and local environments (\texttt{venv/}) are excluded from version control for security and efficiency, follow these steps to initialize and run the system after cloning:
+
+\subsubsection{1. Clone the Repository}
+Clone the project from GitHub to your local machine:
+\begin{codebox}
+\small\ttfamily
+git clone https://github.com/AliFuatAkyemis/knock-design-your-door.git\\
+cd knock-design-your-door
+\end{codebox}
+
+\subsubsection{2. Create Environment Configuration}
+The \texttt{.env} file is not included in the repository to protect API secrets. You must create it manually in the root directory:
+\begin{codebox}
+\small\ttfamily
+touch .env \textcolor{midgray}{\# Or create a new file named .env using a text editor}
+\end{codebox}
+Open the \texttt{.env} file and insert the configuration. Note that while most variables have defaults, the \texttt{GROQ\_API\_KEY} is strictly required:
+\begin{codebox}
+\small\ttfamily
+GROQ\_API\_KEY=your\_groq\_api\_key\_here\\
+MAX\_UPLOAD\_SIZE\_MB=25\\
+UPLOAD\_DIR=uploads\\
+OUTPUT\_DIR=outputs\\
+FRONTEND\_ORIGIN=http://localhost:8000
+\end{codebox}
+
+\subsubsection{3. Initialize Virtual Environment \& Install Dependencies}
+Create a fresh virtual environment to manage project dependencies:
+\begin{codebox}
+\small\ttfamily
+python -m venv venv\\
+source venv/bin/activate  \textcolor{midgray}{\# On Windows: venv\textbackslash Scripts\textbackslash activate}\\
+pip install -r requirements.txt
+\end{codebox}
+
+\subsubsection{4. Launch the Server}
+Start the FastAPI backend using Uvicorn:
+\begin{codebox}
+\small\ttfamily
+uvicorn backend.main:app --reload --port 8000
+\end{codebox}
+
+Once the server is running, navigate to \texttt{http://localhost:8000} in your web browser to access the KNOCK interface.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Artistic Originality}
+
+\subsection{The Hermeneutic Chain}
+
+The conceptual backbone of KNOCK is what we call the \textbf{Hermeneutic Chain}:
+a sequence of interpretations in which each link transforms meaning.
+
+\begin{quotebox}
+    \centering\itshape\color{rust}
+    Dylan (1973) $\;\to\;$ Cover Artist $\;\to\;$ Groq Whisper $\;\to\;$
+    Llama 3.3 $\;\to\;$ Flux $\;\to\;$ Viewer
+\end{quotebox}
+
+Dylan encoded grief, farewell, and the exhaustion of idealism into a two-minute folk
+song. A contemporary performer encodes their own mortality, their own relationship to
+loss, into that song's shell. Whisper encodes the acoustic performance into text.
+Llama encodes the text into thematic meaning. Flux encodes that meaning into pixels.
+And the viewer encodes all of it into personal experience.
+
+This is not degradation --- it is amplification. Each translation adds a layer of
+human and machine subjectivity, and the final artifact carries the sediment of all
+of them. The viewer does not see what Dylan wrote; they see what it means, filtered
+through five interpreters, to look at a door and not yet know what lies behind it.
+
+\subsection{Aesthetic Coherence}
+
+Every design decision in KNOCK --- from the frontend's desaturated color palette to
+the film-grain CSS filter applied to generated images --- serves the single aesthetic
+proposition: \textit{1973 is not a date, it is a feeling.} The feeling of a world
+that had fought for something, had almost believed in it, and was now slowly setting
+it down.
+
+The frontend deliberately avoids modern UI conventions: no gradients, no animations
+beyond a slow dissolve, no sans-serif clarity. The interface feels like a document
+found in a drawer. The generated images feel like photographs from a war that ended
+before anyone agreed on what it meant.
+
+\subsection{Emotional Architecture}
+
+KNOCK is designed to produce a specific emotional sequence in the user:
+\textbf{participation $\to$ surrender $\to$ reflection.} The user participates by
+recording or uploading their cover --- an intimate, slightly vulnerable act. They
+surrender control to the pipeline, which interprets them without negotiation. They
+reflect when the artifact appears: an image that is about them, generated by a
+machine, rooted in a world before they were born.
+
+This sequence mirrors the song itself: the sheriff removes his badge (participation),
+accepts death (surrender), and becomes part of something larger than himself
+(reflection). The user does not die; but they do, briefly, let the machine be the
+one doing the listening.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{The Artwork}
+
+\subsection{Visual Language}
+
+The generated artifact --- what we call the \textbf{Artifact} --- is not an
+illustration of the song. It is a diagnostic portrait of the performer's relationship
+to the song. Two people performing identical lyrics will generate different artifacts,
+because Whisper captures how they sing, the LLM reads what that reveals about their
+inner state, and Flux renders that inner state in 1973's visual language.
+
+The Kodachrome palette was chosen with deliberateness: it is the palette of Eddie
+Adams' 1968 photograph of the Saigon execution, of Nick Ut's 1972 `Napalm Girl,'
+of the documentary footage that brought the Vietnam War into American living rooms.
+These images did not need to be beautiful to be powerful; they needed to be present.
+KNOCK's artifacts inherit that obligation.
+
+\subsection{The Door Motif}
+
+The Door appears in every artifact as a compositional anchor --- sometimes as a
+literal weathered door in an adobe wall, sometimes as a threshold of light at the
+edge of darkness, sometimes as the silhouette of a figure standing at a gate. It is
+the one element the prompt engineering layer protects from variation. Everything else
+--- the historical details, the emotional weather, the figure in the foreground ---
+responds to the specific performer. The Door does not move. The Door waits.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Philosophical Engagement}
+
+\subsection{Historical Depth: 1973 and the Grammar of Farewell}
+
+To understand \textit{Knockin' on Heaven's Door,} one must understand what 1973
+meant to carry. The Paris Peace Accords were signed on January 27, 1973, ending
+direct American military involvement in Vietnam --- but not ending the war, not
+healing the 58,000 Americans and roughly two million Vietnamese dead, and not
+resolving the fracture the conflict had opened in American consciousness. The
+Watergate hearings began in May. A country that had organized itself around
+opposition to a war suddenly had to figure out what it was for.
+
+Dylan, who had been the voice of the protest generation in the early 1960s, had
+spent the intervening years deliberately retreating from that role. By 1973, he was
+in Durango, Mexico, playing a minor role in Peckinpah's elegiac Western and writing
+a song for a dying man. The sheriff in the film is a figure from an older moral
+order --- a man whose codes no longer apply. His death is not heroic; it is a
+laying-down. Dylan, who had once written ``The times they are a-changin','' now
+wrote about the relief of no longer having to change anything.
+
+KNOCK's prompt engineering layer was designed to carry this specific historical
+weight. The LLM system prompt includes a carefully researched paragraph on the 1973
+context, ensuring that even a contemporary pop cover of the song is analyzed through
+the lens of this specific farewell, rather than the generic sentimentality the song
+has accumulated over five decades of use.
+
+\subsection{Dylan's Worldview: The Ethics of Withdrawal}
+
+Dylan's 2016 Nobel Prize lecture offers a retrospective key to his 1973 sensibility.
+Speaking of \textit{Moby Dick,} he described the captain's obsession as a kind of
+moral insanity --- the refusal to let go. The sheriff in \textit{Pat Garrett \&
+Billy the Kid} is the opposite: a man who has the wisdom to put down his badge,
+to acknowledge that his authority has become more burden than purpose. Dylan's Nobel
+lecture suggests he has always been interested in this figure --- the one who stops,
+who refuses to keep fighting a war that has already been decided.
+
+This is the worldview KNOCK inherits. The system does not celebrate death; it
+explores the specific dignity of laying something down. When the LLM analyzes a
+performer's vocal delivery, it is trained to look for this: are they carrying
+something? And can you hear them, in this song, beginning to set it down?
+
+\subsection{The AI as Interpretive Subject}
+
+A central philosophical question animates this project: can an algorithmic system
+genuinely \textit{engage} with a work of art, or does it merely process its surface?
+We do not claim that Llama 3.3 feels grief. We do claim something more modest and
+more interesting: that the model operates within a latent space of human cultural
+production, and that its outputs, when properly constrained, can reflect the
+structure of human meaning-making rather than its mere content.
+
+The LLM has been trained on millions of texts about mortality, war, folk music, and
+loss. It cannot feel these things, but it has learned the grammar of how humans speak
+about them. When it analyzes a performer's transcription and identifies ``a quality
+of resignation threaded through the second verse, consistent with the 1973
+counterculture's exhausted acceptance of systemic failure,'' it is doing something
+real --- not feeling, but pattern-matching against the deepest patterns of human
+expression. We find this sufficient, and more honest than claiming less.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\newpage
+\section{Artist's Manifesto}
+
+\begin{quotebox}
+    \centering\itshape\color{rust}
+    ``Everyone knocks on heaven's door in their own way. What matters is not what
+    you find behind it, but who you discover yourself to be while knocking.''
+\end{quotebox}
+
+\subsection{Why This Medium?}
+
+We chose this medium --- a live processing pipeline that generates images from human
+singing --- because it is the only form we could imagine that would force the question
+we wanted to ask. The question is not ``what does this song mean?'' That question
+has been answered ten thousand times, in ten thousand key changes, by everyone from
+Eric Clapton to Guns N' Roses to Arlo Guthrie's daughter. The question we wanted to
+ask is harder: \textit{what does it mean to interpret something that has already been
+interpreted until it barely knows its own name?}
+
+A generative image cannot answer that question in isolation. An LLM cannot answer it
+alone. But a pipeline that takes a human voice --- wavering, specific, carrying its
+own history --- and runs it through layers of machine interpretation before producing
+a visual artifact: that pipeline makes the question visible. You can see the
+interpretation happening. You can watch the song travel.
+
+We chose this medium also because it requires the user to do something slightly
+uncomfortable: to sing. Not to type about the song, not to click through it, but to
+open their mouth and make the sounds. This is the oldest form of engagement with folk
+music, and we wanted to preserve it even inside a machine. The Whisper model does not
+care if your voice is good. The LLM does not judge your pitch. But you have to
+decide, in the moment of recording, how to hold these particular words. That decision
+is already an interpretation. That is where the art begins --- before the AI has done
+anything at all.
+
+The web application format was chosen because it removes barriers. A gallery
+installation would have been more spatially dramatic, but it would have restricted
+access. A command-line tool would have been more technically pure, but it would have
+excluded everyone who doesn't live in a terminal. The browser is where most people
+encounter things now. We wanted KNOCK to be available to anyone who has ever hummed
+this song in a car and wondered what they were really singing about.
+
+\subsection{What Caught Us?}
+
+We encountered this song the way most people our age do: late, mediated, already
+filtered through decades of use. We did not hear it in 1973, in a dark cinema in the
+aftermath of Vietnam. We heard it covered, sampled, placed in television soundtracks,
+used as a backdrop for sports montages and political advertisements. The song had been
+polished smooth by repetition. We thought we knew what it was.
+
+What caught us --- genuinely, in a way that changed how we thought about the project
+--- was watching the Peckinpah film. Specifically, the scene for which Dylan wrote
+the song: Slim Pickens, playing a dying sheriff, lying in a field by a river while
+his wife holds his hand. It is not a dramatic death. There is no speech, no
+revelation, no final stand. He simply lies there, and the river moves, and the light
+changes, and Dylan sings those four lines. And something in that image --- a man at a
+threshold, not crossing it dramatically but simply arriving at it, spent --- felt
+true in a way we had not expected.
+
+We had come to the project thinking about AI and music and generative systems. We
+left it thinking about what we carry, and what we might one day want to set down.
+That shift is, we think, what the assignment was asking for. Not a technical
+demonstration, but an encounter. We had the encounter. It arrived through a
+sixty-year-old actor dying in a Sam Peckinpah film, and we did not see it coming.
+
+We were also caught by the song's refusal of specificity. Dylan does not tell us what
+heaven is, or whether it exists, or whether the door actually opens. He tells us the
+badge is heavy, the guns are too dark to be clean, and there is a knock. That is all.
+The song's power is entirely in what it withholds. This restraint became a design
+principle for KNOCK: we show the door, we do not show what is behind it. The artifact
+is always a threshold image, never a revelation. We earned that choice from Dylan.
+
+\subsection{AI as What?}
+
+This is the question we debated longest. The easy answers came quickly and were
+quickly discarded.
+
+\textit{AI as tool?} Too simple. A hammer is a tool; it has no relationship to what
+you build with it. Llama 3.3 has read more about mortality and folk music and the
+Vietnam War than either of us will in our lifetimes. When it analyzes a performance,
+it brings that accumulated reading to bear. It is not neutral. Calling it a tool
+flattens something real.
+
+\textit{AI as collaborator?} Too generous, or too specific. A collaborator has
+intentions, preferences, the capacity to surprise you on purpose. The LLM surprised
+us constantly --- producing analyses we would not have written, making connections
+between a performer's phrasing and specific historical events that we had not
+anticipated. But it did not do this \textit{intentionally.} It did it because it was
+well-trained and the prompt was well-constructed. The surprise was real; the intention
+was ours.
+
+\textit{AI as mirror?} Closer. When KNOCK analyzes a cover performance, it reflects
+back a reading of that performance that the performer did not consciously generate.
+It reveals the subtext. A user who sings the song with forced brightness will generate
+an artifact with shadows the user did not choose. The system sees what the user
+performs, not what the user intends. That is mirror-like behavior.
+
+Our final answer: \textbf{AI as archaeologist.} The models we use --- Whisper, Llama,
+Flux --- were trained on enormous archives of human production: speech, text, images.
+They are, in a meaningful sense, compressed human culture. When they process a
+performance of a 1973 folk song, they are not computing from scratch; they are
+excavating from within a vast sediment of human expression, finding the layer that
+corresponds to grief, to farewell, to the specific visual grammar of that era. They
+dig, and what they bring up is genuinely from the earth --- the human earth --- even
+if the hands doing the digging are algorithmic.
+
+This metaphor shaped our technical decisions. We did not try to make the AI create
+something `new' in the sense of unprecedented. We tried to make it excavate something
+specific: the 1973 layer. Every element of the prompt engineering system is a
+constraint that forces the excavation to go in the right direction. The art is in
+knowing where to dig.
+
+\subsection{Your Door: On Thresholds We Carry}
+
+This question --- what does knocking on heaven's door mean in your own life? --- is
+the one we approached most carefully, because it is the one where honesty is most
+expensive.
+
+We are students of computer science in a moment of profound transition. The field we
+are entering is not the field it was five years ago, and it will not be the same field
+in five years more. The tools we are learning to build are tools that are, in some
+configurations, learning to replace the need for builders. We are training for a
+profession that is itself being retrained. This is our version of 1973: the feeling
+that the old frameworks are dissolving, that the badge --- the credential, the
+discipline, the role --- may soon be too heavy to wear, or may mean something
+different than it used to.
+
+We do not say this with self-pity. The sheriff in the film does not die with
+self-pity. He dies with the specific dignity of a man who has chosen to stop fighting
+something larger than himself and instead attend to the river, the light, his wife's
+hand. There is something instructive in that choice. We do not yet know what it means
+to stop fighting the transitions of our field and simply attend to what is good in
+the work --- but KNOCK is, among other things, an attempt to practice that attention.
+
+We also encountered personal thresholds in building this project. Working together
+across late nights and debugging sessions, we discovered that collaboration has its
+own doors --- moments where you must decide whether to hold your position or let your
+partner's vision lead. Those moments felt, in small ways, like the song: the relief
+of releasing something you had been gripping too hard.
+
+What does knocking on heaven's door mean to us? It means: there are things you cannot
+force. There are doors that open on their own schedule, or not at all. The knocker's
+job is only to knock --- to keep showing up at the threshold, with whatever you have,
+and wait. KNOCK, the system, does this literally: it takes a human at a threshold
+(singing a song about thresholds) and renders that threshold back to them in visual
+form. We designed it this way because we believe the rendering is the point.
+Not the arrival. Never the arrival. Only the knocking.
+
+We will graduate from this program and walk through a door that none of us can see
+clearly yet. The field is changing; the economy is changing; what it means to build
+software, to make something, to be useful --- all of it is in motion. We made this
+project as an act of attention to that threshold. Not an answer. An attention.
+We hope it is the kind of attention that leaves a mark.
+
+\vspace{12pt}
+\begin{mdframed}[linecolor=gold, linewidth=0.4pt, backgroundcolor=lightgray,
+    innerleftmargin=10pt, innerrightmargin=10pt,
+    innertopmargin=8pt, innerbottommargin=8pt]
+\small\itshape\color{midgray}
+\textbf{Team contribution note:} Technical architecture, backend implementation, and
+prompt engineering system were developed jointly with continuous iteration between
+both team members. Artistic direction and manifesto writing were co-authored through
+a deliberate process of challenge and revision. Both members are prepared to discuss
+any aspect of the project in full during the exhibition.
+\end{mdframed}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Conclusion}
+
+KNOCK: Design Your Door succeeds in doing what we set out to do: building a system
+that does not merely process a song, but engages with it. The technical pipeline ---
+Whisper to Llama to Flux, mediated by a carefully engineered prompt layer ---
+produces artifacts that are visually distinctive, historically grounded, and genuinely
+responsive to individual human performance. No two artifacts are the same, because
+no two performances are the same.
+
+More importantly, the system taught us something we did not know we needed to learn.
+We came to it as engineers interested in pipeline architecture. We left it as people
+who had spent weeks thinking about farewell, about the dignity of disarmament, about
+what it means to stand at a threshold and knock without knowing what --- or who ---
+might answer.
+
+Dylan wrote a song for a dying man in a film about a dying era. We built a machine
+for listening to how people sing that song today, and for rendering what we hear in
+the visual grammar of that era. The door in every artifact is the same door. The
+light behind it changes every time. That variability is not a bug. It is the entire
+point.
+
+\begin{quotebox}
+    \centering\itshape\color{rust}
+    ``Knock. The door is yours to design. What's behind it is yours to discover.''
+\end{quotebox}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Academic Integrity Statement}
+
+All AI tools used in this project are documented transparently. The Groq API was used
+for Whisper (\texttt{whisper-large-v3-turbo}) and Llama 3.3
+(\texttt{llama-3.3-70b-versatile}) inference. The Pollinations.ai API was used for
+Flux-based image generation. All creative vision, architectural design, prompt
+engineering decisions, and philosophical reflection are original work by the project
+team. No code was borrowed without attribution; the full repository is available for
+inspection at
+\href{https://github.com/AliFuatAkyemis/knock-design-your-door}%
+     {\texttt{github.com/AliFuatAkyemis/knock-design-your-door}}.
+Both team members can explain every component of the pipeline in full.
+
+\end{document}
